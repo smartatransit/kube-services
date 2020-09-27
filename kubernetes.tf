@@ -1,10 +1,9 @@
-provider "kubernetes" {
-  load_config_file = false
-}
+provider "kubernetes" {}
 provider "kubernetes-alpha" {}
 
 terraform {
   backend "kubernetes" {
-    secret_suffix = "kube-services"
+    secret_suffix     = "kube-services"
+    in_cluster_config = true
   }
 }
