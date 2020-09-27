@@ -1,0 +1,41 @@
+---
+kind: pipeline
+type: kubernetes
+name: kube-services
+
+defaults:
+  image: &default_image
+    hashicorp/terraform:0.13.3
+  env: &default_env
+    TF_VAR_lets_encrypt_email:
+      from_secret: lets_encrypt_email
+    TF_VAR_services_domain:
+      from_secret: services_domain
+    TF_VAR_postgres_root_password:
+      from_secret: postgres_root_password
+
+steps:
+- name: plan
+  image: *default_image
+  environment: *default_env
+
+  commands:
+  - terraform init -lock=false -input=false
+  - terraform validate
+  - terraform plan -lock=false -input=false
+  when:
+    event: [ push ]
+    branch:
+      exclude: [ master ]
+
+- name: apply
+  image: *default_image
+  environment: *default_env
+
+  commands:
+  - terraform init -lock=true -lock-timeout=0s -input=false
+  - terraform validate
+  - terraform plan -lock=true -lock-timeout=0s -input=false -out=tfplan .
+  - terraform apply -lock=true -lock-timeout=0s -input=false tfplan
+  when:
+    branch: [ master ]
