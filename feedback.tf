@@ -31,11 +31,12 @@ module "feedback_deployment" {
 }
 
 module "feedback_service" {
-  source          = "./modules/subdomain"
-  subdomain       = "feedback"
-  namespace       = kubernetes_namespace.feedback.metadata.0.name
-  target_port     = 8080
-  services_domain = var.services_domain
+  source               = "./modules/subdomain"
+  subdomain            = "feedback"
+  namespace            = kubernetes_namespace.feedback.metadata.0.name
+  target_port          = 8080
+  services_domain      = var.services_domain
+  auth_middleware_name = var.auth_middleware_name
 
   selector = module.feedback_deployment.selector
 }
