@@ -42,15 +42,15 @@ resource "kubernetes_deployment" "deployment" {
           dynamic "env" {
             for_each = var.env
             content {
-              name  = each.key
-              value = each.value
+              name  = env.key
+              value = env.value
             }
           }
 
           dynamic "port" {
             for_each = var.container_ports
             content {
-              container_port = each.value
+              container_port = port.value
             }
           }
         }
