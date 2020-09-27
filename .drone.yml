@@ -8,8 +8,6 @@ defaults:
     hashicorp/terraform:0.13.3
   env: &default_env
     KUBE_LOAD_CONFIG_FILE: false
-    TF_VAR_lets_encrypt_email:
-      from_secret: lets_encrypt_email
     TF_VAR_services_domain:
       from_secret: services_domain
     TF_VAR_postgres_admin_password:
@@ -21,6 +19,7 @@ steps:
   environment: *default_env
 
   commands:
+  - env
   - terraform init -lock=false -input=false
   - terraform validate
   - terraform plan -lock=false -input=false
