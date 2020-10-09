@@ -12,6 +12,12 @@ defaults:
       from_secret: services_domain
     TF_VAR_postgres_admin_password:
       from_secret: postgres_admin_password
+    TF_VAR_marta_api_key:
+      from_secret: marta_api_key
+    TF_VAR_third_rail_twitter_client_id:
+      from_secret: third_rail_twitter_client_id
+    TF_VAR_third_rail_twitter_client_secret:
+      from_secret: third_rail_twitter_client_secret
 
 steps:
 - name: plan

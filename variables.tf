@@ -14,3 +14,12 @@ variable "postgres_internal_name" {
   type    = string
   default = "postgres.postgres.svc.cluster.local"
 }
+variable "marta_api_key" {
+  type = string
+}
+variable "third_rail_twitter_client_id" {
+  type = string
+}
+variable "third_rail_twitter_client_secret" {
+  type = string
+}

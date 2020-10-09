@@ -28,9 +28,18 @@ resource "postgresql_extension" "ext" {
   database = postgresql_database.db.name
 }
 
-output "postgres_url" {
+output "host" {
+  value = var.postgres_host
+}
+output "username" {
+  value = postgresql_role.role.name
+}
+output "db" {
+  value = postgresql_database.db.name
+}
+output "url" {
   value = "postgres://${postgresql_role.role.name}@${var.postgres_host}/${postgresql_database.db.name}?sslmode=disable"
 }
-output "postgres_password" {
+output "password" {
   value = random_password.pw.result
 }
