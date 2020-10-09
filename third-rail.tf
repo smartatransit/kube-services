@@ -42,7 +42,7 @@ module "third_rail_service" {
   services_domain      = var.services_domain
   auth_middleware_name = var.auth_middleware_name
 
-  selector = module.selector_deployment.selector
+  selector = module.third_rail_deployment.selector
 }
 
 module "third_rail_insecure_service" {
@@ -52,5 +52,5 @@ module "third_rail_insecure_service" {
   target_port     = 5000
   services_domain = var.services_domain
 
-  selector = module.selector_deployment.selector
+  selector = module.third_rail_deployment.selector
 }
