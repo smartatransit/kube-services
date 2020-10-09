@@ -26,11 +26,11 @@ module "third_rail_deployment" {
     TWITTER_CLIENT_ID     = var.third_rail_twitter_client_id
     TWITTER_CLIENT_SECRET = var.third_rail_twitter_client_secret
 
-    DB_HOST     = module.feedback_db.host
+    DB_HOST     = module.third_rail_db.host
     DB_PORT     = 5432
-    DB_NAME     = module.feedback_db.db
-    DB_USERNAME = module.feedback_db.username
-    DB_PASSWORD = module.feedback_db.password
+    DB_NAME     = module.third_rail_db.db
+    DB_USERNAME = module.third_rail_db.username
+    DB_PASSWORD = module.third_rail_db.password
   }
 }
 
@@ -42,7 +42,7 @@ module "third_rail_service" {
   services_domain      = var.services_domain
   auth_middleware_name = var.auth_middleware_name
 
-  selector = module.feedback_deployment.selector
+  selector = module.selector_deployment.selector
 }
 
 module "third_rail_insecure_service" {
@@ -52,5 +52,5 @@ module "third_rail_insecure_service" {
   target_port     = 5000
   services_domain = var.services_domain
 
-  selector = module.feedback_deployment.selector
+  selector = module.selector_deployment.selector
 }
