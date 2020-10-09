@@ -25,8 +25,8 @@ module "feedback_deployment" {
   container_ports = [8080]
 
   env = {
-    POSTGRES_URL = module.feedback_db.postgres_url
-    PGPASSWORD   = module.feedback_db.postgres_password
+    POSTGRES_URL = module.feedback_db.url
+    PGPASSWORD   = module.feedback_db.password
   }
 }
 
