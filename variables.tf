@@ -26,5 +26,5 @@ variable "third_rail_twitter_client_secret" {
 
 variable "healthcheck_config_path" {
   type = string
-  default = "config.yaml"
+  default = "./config.yaml"
 }
