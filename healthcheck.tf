@@ -1,5 +1,5 @@
 locals {
-  healthcheck_build_num = 13
+  healthcheck_build_num = 14
 }
 
 resource "kubernetes_namespace" "healthcheck" {
