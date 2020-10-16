@@ -1,7 +1,7 @@
 variable "services_domain" {
   type        = string
   description = "The domain under which to serve services on subdomains"
-  default     = "services.smartatrasit.com"
+  default     = "services.smartatransit.com"
 }
 variable "postgres_hostname" {
   type    = string
@@ -26,6 +26,6 @@ variable "third_rail_twitter_client_secret" {
 }
 
 variable "healthcheck_config_path" {
-  type = string
+  type    = string
   default = "./config.yaml"
 }
