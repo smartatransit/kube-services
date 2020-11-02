@@ -1,5 +1,5 @@
 locals {
-  third_rail_build_num = 59
+  third_rail_build_num = 110
 }
 
 resource "kubernetes_namespace" "third_rail" {
