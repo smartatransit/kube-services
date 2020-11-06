@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # See files in the ./jobs folder for usage examples
 
@@ -10,13 +10,13 @@ template=$(cat jobs/$1.yaml | sed "s/\$JOB_ID/$JOB_ID/")
 name=$(echo """$template""" | grep "name:" | head -1 | gawk '{print $2}')
 namespace=$(echo """$template""" | grep "namespace:" | head -1 | gawk '{print $2}')
 
-echo "applying"
+echo ">>> applying"
 kubectl apply -f <(echo """$template""")
 
 sleep 5
-echo "getting logs"
-while [ ! $(kubectl -n $namespace logs jobs/$name -f) ]
+echo ">>> getting logs"
+until kubectl -n $namespace logs jobs/$name -f
 do
 	sleep 5
-	echo "trying again"
+	echo ">>> containers not ready - trying again"
 done
