@@ -1,5 +1,5 @@
 locals {
-  third_rail_build_num = 110
+  third_rail_build_num = 117
 }
 
 resource "kubernetes_namespace" "third_rail" {
@@ -26,11 +26,8 @@ module "third_rail_deployment" {
     TWITTER_CLIENT_ID     = var.third_rail_twitter_client_id
     TWITTER_CLIENT_SECRET = var.third_rail_twitter_client_secret
 
-    DB_HOST     = module.third_rail_db.host
-    DB_PORT     = 5432
-    DB_NAME     = module.third_rail_db.db
-    DB_USERNAME = module.third_rail_db.username
-    DB_PASSWORD = module.third_rail_db.password
+    DB_CONNECTION_STRING = module.third_rail_db.url
+    PGPASSWORD           = module.third_rail_db.password
   }
 }
 
@@ -53,4 +50,18 @@ module "third_rail_insecure_service" {
   services_domain = var.services_domain
 
   selector = module.third_rail_deployment.selector
+}
+
+
+resource "kubernetes_secret" "third-rail-pgpassword" {
+  metadata {
+    name      = "pgpassword"
+    namespace = "third-rail"
+  }
+
+  data = {
+    password = module.third_rail_db.password
+  }
+
+  type = "kubernetes.io/basic-auth"
 }

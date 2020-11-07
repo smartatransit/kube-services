@@ -1,0 +1,22 @@
+#!/bin/bash -e
+
+# See files in the ./jobs folder for usage examples
+
+JOB_ID=$RANDOM
+echo "JOB_ID=$JOB_ID"
+
+template=$(cat jobs/$1.yaml | sed "s/\$JOB_ID/$JOB_ID/")
+
+name=$(echo """$template""" | grep "name:" | head -1 | gawk '{print $2}')
+namespace=$(echo """$template""" | grep "namespace:" | head -1 | gawk '{print $2}')
+
+echo ">>> applying"
+kubectl apply -f <(echo """$template""")
+
+sleep 5
+echo ">>> getting logs"
+until kubectl -n $namespace logs jobs/$name -f
+do
+	sleep 5
+	echo ">>> containers not ready - trying again"
+done

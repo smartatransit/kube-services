@@ -1,0 +1,31 @@
+# e.g.
+# $ ./run third-rail-dbinit
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: third-rail-dbinit-$JOB_ID
+  namespace: third-rail
+  labels:
+    blue.house: manual-job
+spec:
+  backoffLimit: 1
+  template:
+    metadata:
+      name: payment-dbinit-$JOB_ID
+      labels:
+        smartatransit.manual-job: "true"
+    spec:
+      containers:
+      - name: payment-dbinit-$JOB_ID
+        image:  smartatransit/third_rail
+        command: ["/bin/dbinit"]
+        env:
+        - name: DB_CONNECTION_STRING
+          value: postgresql://third_rail@postgres.postgres.svc.cluster.local/third_rail?sslmode=disable
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: PGPASSWORD
+              key: pgpassword
+      restartPolicy: Never
