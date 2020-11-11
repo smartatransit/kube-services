@@ -15,6 +15,27 @@ variable "env" {
   type    = map
   default = {}
 }
+variable "files" {
+  type = map(object({
+    target   = string
+    template = string
+    vars     = map(string)
+  }))
+  default = {}
+}
+
+resource "kubernetes_config_map" "files" {
+  for_each = var.files
+
+  metadata {
+    name      = "files-${var.name}-${each.key}"
+    namespace = var.namespace
+  }
+
+  data = {
+    "file" = templatefile("templates/${each.value.template}", each.value.vars)
+  }
+}
 
 resource "kubernetes_deployment" "deployment" {
   metadata {
@@ -51,6 +72,25 @@ resource "kubernetes_deployment" "deployment" {
             for_each = var.container_ports
             content {
               container_port = port.value
+            }
+          }
+
+          dynamic "volume_mount" {
+            for_each = var.files
+            content {
+              name       = volume_mount.key
+              mount_path = volume_mount.value.target
+              sub_path   = basename(volume_mount.value.target)
+            }
+          }
+        }
+
+        dynamic "volume" {
+          for_each = var.files
+          content {
+            name = volume.key
+            config_map {
+              name = kubernetes_config_map.files[volume.key].metadata.0.name
             }
           }
         }

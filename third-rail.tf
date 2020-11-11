@@ -1,5 +1,6 @@
 locals {
-  third_rail_build_num = 117
+  third_rail_build_num   = 117
+  scrapedumper_build_num = 291
 }
 
 resource "kubernetes_namespace" "third_rail" {
@@ -64,4 +65,45 @@ resource "kubernetes_secret" "third-rail-pgpassword" {
   }
 
   type = "kubernetes.io/basic-auth"
+}
+
+### Deploy the MARTA API daemon
+module "scrapedumper_deployment" {
+  source    = "./modules/deployment"
+  name      = "third-rail-scrapedumper"
+  namespace = kubernetes_namespace.third_rail.metadata.0.name
+
+  image = "smartatransit/scrapedumper:build-${local.scrapedumper_build_num}"
+  files = {
+    "yamlconfig" = {
+      target   = "/config.yaml"
+      template = "scrapedumper.yaml"
+      vars = {
+        pg_connection_string = module.third_rail_db.url
+      }
+    }
+  }
+
+  env = {
+    POLL_TIME_IN_SECONDS = "15"
+    CONFIG_PATH          = "/config.yaml"
+    PGPASSWORD           = module.third_rail_db.password
+    MARTA_API_KEY        = var.marta_api_key
+  }
+}
+
+module "scrapereaper_cronjob" {
+  source    = "./modules/cron"
+  name      = "third-rail-scrapereaper"
+  namespace = kubernetes_namespace.third_rail.metadata.0.name
+
+  image = "smartatransit/scrapereaper:build-${local.scrapedumper_build_num}"
+
+  # 8AM UTC is 3AM eastern
+  schedule = "0 8 * * *"
+
+  env = {
+    POSTGRES_CONNECTION_STRING = module.third_rail_db.url
+    PGPASSWORD                 = module.third_rail_db.password
+  }
 }
