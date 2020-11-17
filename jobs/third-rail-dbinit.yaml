@@ -26,6 +26,6 @@ spec:
         - name: PGPASSWORD
           valueFrom:
             secretKeyRef:
-              name: PGPASSWORD
-              key: pgpassword
+              name: pgpassword
+              key: password
       restartPolicy: Never
