@@ -80,7 +80,7 @@ resource "kubernetes_deployment" "deployment" {
             content {
               name       = volume_mount.key
               mount_path = volume_mount.value.target
-              sub_path   = basename(volume_mount.value.target)
+              sub_path   = "file"
             }
           }
         }
