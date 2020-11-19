@@ -1,5 +1,5 @@
 locals {
-  third_rail_build_num   = 117
+  third_rail_build_num   = 120
   scrapedumper_build_num = 291
 }
 
@@ -32,6 +32,25 @@ module "third_rail_deployment" {
   }
 }
 
+module "third_rail_insecure_deployment" {
+  source    = "./modules/deployment"
+  name      = "third-rail-insecure"
+  namespace = kubernetes_namespace.third_rail.metadata.0.name
+
+  image           = "smartatransit/third_rail:build-${local.third_rail_build_num}"
+  container_ports = [5000]
+
+  env = {
+    SERVICE_DOMAIN        = "third-rail-insecure.${var.services_domain}"
+    MARTA_API_KEY         = var.marta_api_key
+    TWITTER_CLIENT_ID     = var.third_rail_twitter_client_id
+    TWITTER_CLIENT_SECRET = var.third_rail_twitter_client_secret
+
+    DB_CONNECTION_STRING = module.third_rail_db.url
+    PGPASSWORD           = module.third_rail_db.password
+  }
+}
+
 module "third_rail_service" {
   source               = "./modules/subdomain"
   subdomain            = "third-rail"
@@ -50,7 +69,7 @@ module "third_rail_insecure_service" {
   target_port     = 5000
   services_domain = var.services_domain
 
-  selector = module.third_rail_deployment.selector
+  selector = module.third_rail_insecure_deployment.selector
 }
 
 
