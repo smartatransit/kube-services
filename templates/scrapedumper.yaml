@@ -1,6 +1,7 @@
 {
   "train_dumper": {
     "kind": "POSTGRES",
-    "postgres_connection_string": "${pg_connection_string}"
+    "postgres_connection_string": "${pg_connection_string}",
+    "third_rail_context": true
   }
 }
