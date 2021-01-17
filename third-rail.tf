@@ -1,6 +1,6 @@
 locals {
-  third_rail_build_num   = 139
-  scrapedumper_build_num = 312
+  third_rail_build_num   = 141
+  scrapedumper_build_num = 313
 }
 
 resource "kubernetes_namespace" "third_rail" {
